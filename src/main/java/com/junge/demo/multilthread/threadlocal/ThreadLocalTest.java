@@ -4,6 +4,9 @@
 package com.junge.demo.multilthread.threadlocal;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.plaf.synth.SynthSpinnerUI;
 
 /**
  * 描述类功能
@@ -35,6 +38,21 @@ public class ThreadLocalTest {
 				}
 			}).start();
 		}
+		
+		Runtime runtime = Runtime.getRuntime();
+		runtime.addShutdownHook(new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				System.out.println("####################");
+				try {
+					TimeUnit.SECONDS.sleep(200);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}));
 
 	}
 
