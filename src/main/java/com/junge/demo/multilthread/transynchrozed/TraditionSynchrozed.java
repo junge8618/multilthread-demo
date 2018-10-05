@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
  * synchronize加到方法内部或者方法签名上，是对同一个对象进行互斥访问
  * 静态方法添加synchronize是对类的所有对象都进行互斥访问
  * 
+ * 若锁住的不是同一个对象（或者类），同步锁不会生效
+ * 
  * @author "liuxj"
  * @date 2018年9月2日
  */
@@ -37,7 +39,7 @@ public class TraditionSynchrozed {
 						e.printStackTrace();
 					}
 
-					outputer.print4("zhangsan");
+					outputer.print3("zhangsan111111111111111111111111111111");
 				}
 
 			}
@@ -52,7 +54,7 @@ public class TraditionSynchrozed {
 						e.printStackTrace();
 					}
 
-					outputer.print3("lisi");
+					outputer.print4("lisi222222222222222222222222222222222");
 				}
 
 			}
@@ -60,39 +62,32 @@ public class TraditionSynchrozed {
 	}
 
 	static class Outputer {
-		public void print(String outputstr) {
-			synchronized (this) {
-				for (int i = 0; i < outputstr.length(); i++) {
-					System.out.print(outputstr.charAt(i));
-				}
+		
+		private static void print(String outputstr) {
+			for (int i = 0; i < outputstr.length(); i++) {
+				System.out.print(outputstr.charAt(i));
+			}
 
-				System.out.println();
+			System.out.println();
+		}
+		
+		public void print1(String outputstr) {
+			synchronized (this) {
+				print(outputstr);
 			}
 		}
 
 		public synchronized void print2(String outputstr) {
-			for (int i = 0; i < outputstr.length(); i++) {
-				System.out.print(outputstr.charAt(i));
-			}
-
-			System.out.println();
+			print(outputstr);
 		}
 		
 		public static synchronized void print3(String outputstr) {
-			for (int i = 0; i < outputstr.length(); i++) {
-				System.out.print(outputstr.charAt(i));
-			}
-
-			System.out.println();
+			print(outputstr);
 		}
 		
 		public void print4(String outputstr) {
 			synchronized (Outputer.class) {
-				for (int i = 0; i < outputstr.length(); i++) {
-					System.out.print(outputstr.charAt(i));
-				}
-
-				System.out.println();
+				print(outputstr);
 			}
 		}
 	}
