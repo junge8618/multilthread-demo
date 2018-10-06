@@ -35,7 +35,7 @@ public class CacheDataTest {
 				public void run() {
 					try {
 						latch.await();
-						System.out.println("get data : " + CacheData.getData(key));
+						System.out.println(Thread.currentThread().getName() + " get data from cache : " + CacheData.getData(key));
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -71,15 +71,19 @@ class CacheData {
 				// 释放读锁，获取写锁
 				lock.readLock().unlock();
 				lock.writeLock().lock();
-				value = datas.get(key);
-				if (null == value) {
-					value = "ddddddd" + Math.round(100); //从数据库读取数据
-					System.out.println(Thread.currentThread().getName() + " get data : " + value);
-					datas.put(key, value);
+				try {
+					value = datas.get(key);
+					if (null == value) {
+						value = "ddddddd" + Math.round(100); //从数据库读取数据
+						System.out.println(Thread.currentThread().getName() + " get data from db : " + value);
+						datas.put(key, value);
+					}
+					
+					lock.readLock().lock();
+				} finally {
+					lock.writeLock().unlock();
 				}
 				
-				lock.readLock().lock();
-				lock.writeLock().unlock();
 			}
 		} finally {
 			lock.readLock().unlock();
